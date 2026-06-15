@@ -1,0 +1,125 @@
+{
+  "schemaVersion": "1.0",
+  "identity": {
+    "name": "Diego Fernández",
+    "email": "diego.fernandez@example.com",
+    "location": "Madrid, Spain",
+    "source": "parsed",
+    "confidence": 1
+  },
+  "target": {
+    "role": "mlops-engineer",
+    "seniority": "staff",
+    "yearsInAiMl": 8,
+    "companyType": "big-tech",
+    "locationPreference": "hybrid",
+    "pageLength": "one-page"
+  },
+  "headline": {
+    "text": "MLOps Engineer",
+    "source": "asked",
+    "confidence": 1
+  },
+  "summary": {
+    "text": "Staff MLOps engineer who keeps model platforms fast, observable, and cheap. Owns the serving and CI/CD path for 30+ models across two business units.",
+    "source": "asked",
+    "confidence": 1
+  },
+  "skills": [
+    { "name": "Model deployment", "category": "serving-mlops", "level": "expert", "source": "parsed", "confidence": 1 },
+    { "name": "Latency & cost optimization", "category": "serving-mlops", "level": "expert", "source": "parsed", "confidence": 1 },
+    { "name": "Monitoring", "category": "serving-mlops", "level": "expert", "source": "parsed", "confidence": 1 },
+    { "name": "CI/CD for models", "category": "serving-mlops", "level": "expert", "source": "parsed", "confidence": 1 },
+    { "name": "Infrastructure", "category": "serving-mlops", "level": "expert", "source": "parsed", "confidence": 1 },
+    { "name": "Observability", "category": "evaluation-reliability", "level": "expert", "source": "parsed", "confidence": 1 },
+    { "name": "Regression testing", "category": "evaluation-reliability", "level": "proficient", "source": "parsed", "confidence": 1 },
+    { "name": "Model deployment (vLLM/Triton)", "raw": "vLLM, Triton", "category": "serving-mlops", "level": "expert", "source": "parsed", "confidence": 1 },
+    { "name": "Data engineering", "category": "foundations", "level": "proficient", "source": "parsed", "confidence": 1 }
+  ],
+  "experience": [
+    {
+      "org": "Cumulus Cloud",
+      "title": "Staff MLOps Engineer",
+      "location": "Madrid, Spain",
+      "startDate": "2021-01",
+      "endDate": "present",
+      "source": "parsed",
+      "confidence": 1,
+      "bullets": [
+        {
+          "action": "Built the model-serving platform that productionized 30+ models on Kubernetes",
+          "system": "Cumulus Serve",
+          "tech": ["Kubernetes", "vLLM", "Triton", "Ray"],
+          "metric": "serving 4k requests/sec at p99 < 120ms",
+          "source": "asked",
+          "confidence": 1
+        },
+        {
+          "action": "Designed the CI/CD pipeline with automated regression gates and a model registry",
+          "system": "Cumulus Serve",
+          "tech": ["CI/CD", "model registry", "regression testing", "Terraform"],
+          "metric": "cut median deploy time from 3 days to 2 hours",
+          "source": "asked",
+          "confidence": 1
+        },
+        {
+          "action": "Rolled out end-to-end observability with tracing and drift detection",
+          "system": "Cumulus observability stack",
+          "tech": ["tracing", "drift detection", "Prometheus", "Grafana"],
+          "metric": "reduced mean time to detect production regressions from 6h to 15min",
+          "source": "asked",
+          "confidence": 1
+        },
+        {
+          "action": "Optimized GPU utilization with request batching and autoscaling",
+          "system": "Cumulus Serve",
+          "tech": ["request batching", "KV cache", "autoscaling"],
+          "metric": "lowered serving cost 42% while absorbing 2x traffic growth",
+          "source": "asked",
+          "confidence": 1
+        }
+      ]
+    },
+    {
+      "org": "Iberia Analytics",
+      "title": "ML Platform Engineer",
+      "location": "Madrid, Spain",
+      "startDate": "2016-09",
+      "endDate": "2020-12",
+      "source": "parsed",
+      "confidence": 1,
+      "bullets": [
+        {
+          "action": "Built the feature pipeline and training infrastructure for the recommendations team",
+          "system": "recs feature store",
+          "tech": ["Spark", "Airflow", "feature engineering"],
+          "metric": "processing 2TB/day with a 99.9% pipeline SLA",
+          "source": "asked",
+          "confidence": 1
+        }
+      ]
+    }
+  ],
+  "projects": [],
+  "publications": [],
+  "education": [
+    {
+      "institution": "Universidad Politécnica de Madrid",
+      "degree": "BSc",
+      "field": "Computer Engineering",
+      "year": 2016,
+      "source": "parsed",
+      "confidence": 1
+    }
+  ],
+  "certifications": [
+    { "name": "Certified Kubernetes Administrator (CKA)", "issuer": "CNCF", "year": 2021, "source": "parsed", "confidence": 1 }
+  ],
+  "links": [
+    { "type": "github", "url": "https://github.com/example-diego", "label": "GitHub" }
+  ],
+  "screening": {
+    "buildsAiSystems": true,
+    "selfDescribedFocus": "I run the platform that gets models to production and keeps them healthy."
+  }
+}

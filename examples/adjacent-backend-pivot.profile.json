@@ -1,0 +1,90 @@
+{
+  "schemaVersion": "1.0",
+  "identity": {
+    "name": "Sam Carter",
+    "email": "sam.carter@example.com",
+    "location": "Manchester, UK",
+    "source": "parsed",
+    "confidence": 1
+  },
+  "target": {
+    "role": "other",
+    "roleLabel": "Backend Engineer (pivoting)",
+    "seniority": "mid",
+    "yearsInAiMl": 1,
+    "companyType": "enterprise",
+    "locationPreference": "hybrid",
+    "pageLength": "one-page"
+  },
+  "headline": {
+    "text": "Backend Engineer",
+    "source": "parsed",
+    "confidence": 0.9
+  },
+  "summary": {
+    "text": "Backend engineer with 5 years building web services, now moving into AI. Shipped a first RAG-backed search feature this year and looking to grow into an AI engineering role.",
+    "source": "asked",
+    "confidence": 1
+  },
+  "skills": [
+    { "name": "RAG", "category": "retrieval-knowledge", "level": "familiar", "source": "asked", "confidence": 0.8 },
+    { "name": "Model deployment", "category": "serving-mlops", "level": "familiar", "source": "parsed", "confidence": 0.8 },
+    { "name": "Streaming & APIs", "raw": "FastAPI", "category": "serving-mlops", "level": "proficient", "source": "parsed", "confidence": 1 }
+  ],
+  "experience": [
+    {
+      "org": "Pennine Software",
+      "title": "Senior Backend Engineer",
+      "location": "Manchester, UK",
+      "startDate": "2019-04",
+      "endDate": "present",
+      "source": "parsed",
+      "confidence": 1,
+      "bullets": [
+        {
+          "action": "Added a RAG-backed search feature to the help center using an off-the-shelf vector store",
+          "system": "help-center search",
+          "tech": ["RAG", "FastAPI", "Postgres"],
+          "metric": "deployed to production for 1k internal users",
+          "source": "asked",
+          "confidence": 0.9
+        },
+        {
+          "action": "Owned and scaled the billing service",
+          "system": "billing service",
+          "tech": ["FastAPI", "Postgres", "Docker"],
+          "metric": "handling 600 requests/sec with 99.95% uptime",
+          "source": "parsed",
+          "confidence": 1
+        },
+        {
+          "action": "Led the migration of the monolith to services",
+          "system": "platform",
+          "tech": ["Docker", "REST"],
+          "source": "parsed",
+          "confidence": 1
+        }
+      ]
+    }
+  ],
+  "projects": [],
+  "publications": [],
+  "education": [
+    {
+      "institution": "University of Manchester",
+      "degree": "BSc",
+      "field": "Software Engineering",
+      "year": 2018,
+      "source": "parsed",
+      "confidence": 1
+    }
+  ],
+  "certifications": [],
+  "links": [
+    { "type": "github", "url": "https://github.com/example-sam", "label": "GitHub" }
+  ],
+  "screening": {
+    "buildsAiSystems": false,
+    "selfDescribedFocus": "Backend engineer who just started building AI features and wants to pivot."
+  }
+}

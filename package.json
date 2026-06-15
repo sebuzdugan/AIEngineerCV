@@ -1,0 +1,32 @@
+{
+  "name": "aiengineercv",
+  "version": "0.1.0",
+  "private": true,
+  "description": "An open-source CV builder for AI engineers. One brain, three doors.",
+  "license": "MIT",
+  "author": "Sebastian Buzdugan (@sebuzdugan)",
+  "homepage": "https://github.com/sebuzdugan/AIEngineerCV",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sebuzdugan/AIEngineerCV.git"
+  },
+  "keywords": [
+    "cv",
+    "resume",
+    "ai-engineer",
+    "llm",
+    "open-source"
+  ],
+  "scripts": {
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
+    "typecheck": "pnpm -r typecheck"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.4"
+  },
+  "packageManager": "pnpm@9.7.0",
+  "engines": {
+    "node": ">=18"
+  }
+}
