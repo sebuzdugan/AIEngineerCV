@@ -10,6 +10,8 @@ Turn your raw materials - an old CV, a LinkedIn export, a GitHub, or just free t
 polished, role-targeted CV, by applying baked-in **AI-engineering hiring judgment** instead of
 generic resume tips.
 
+[![AIEngineerCV web app](docs/media/web-preview.png)](https://sebuzdugan.github.io/AIEngineerCV/)
+
 - **One canonical `Profile`** - a validated schema that fully describes a candidate.
 - **Three thin adapters** - Web (drag-and-drop), CLI (`npx`/`aicv`), and a Claude skill - that
   each do one job: populate a valid `Profile`.
