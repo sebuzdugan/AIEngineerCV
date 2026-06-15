@@ -83,10 +83,16 @@ have a number for this?") and regenerate. Do not over-loop; respect the user's t
 
 ### 7. Output
 
-Write the final CV to a Markdown file (e.g. `cv.md`) so the user can download it. Offer the
+Write the final CV to `cv.md` and a print-ready `cv.html` so the user can download it. Offer the
 share-card string:
 
 > My AI Recruiter Score: <score> - built with AIEngineerCV by @sebuzdugan
+
+**PDF.** In Claude Code (Bash available), offer to produce a real PDF - the most reliable path is the
+project CLI: `npx aiengineercv export --pdf` (or `aicv export --pdf`) against the saved
+`profile.json`, or render `cv.html` with a converter if one is installed. In Claude Desktop (no
+Bash), tell the user to open `cv.html` and Print -> Save as PDF, or use the web app at
+https://sebuzdugan.github.io/AIEngineerCV/ for one-click PDF.
 
 ## Tone
 

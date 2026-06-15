@@ -18,7 +18,7 @@ generic resume tips.
 [![AIEngineerCV web app](docs/media/web-preview.png)](https://sebuzdugan.github.io/AIEngineerCV/)
 
 - **One canonical `Profile`** - a validated schema that fully describes a candidate.
-- **Three thin adapters** - Web (drag-and-drop), CLI (`npx`/`aicv`), and a Claude skill - that
+- **Three thin adapters** - Web (drag-and-drop), CLI (`npx`/`aicv`), and a Claude plugin - that
   each do one job: populate a valid `Profile`.
 - **One generation spec** - the deterministic, prompt-driven brain that turns a `Profile` into a CV.
 
@@ -47,13 +47,21 @@ Every LLM step is optional. With no key, `aicv` still scores you, renders a clea
 deterministically, and exports it - the score never needs a key. The guardrail (`aicv generate`)
 declines out-of-scope CVs unless you pass `--force`, and never bypasses silently.
 
-## Claude skill
+## Claude plugin
 
-Inside Claude (Code or Desktop), say **"build my AI engineer CV"** and attach your old CV (or just
-describe yourself). The [`claude-skill/`](claude-skill) runs the same flow as the CLI: ingest ->
-draft `Profile` -> ask only the gaps -> guardrail -> generate -> score -> output the CV as a file.
-[`SKILL.md`](claude-skill/SKILL.md) is the orchestration, pointed at the same six expertise assets
-that power every adapter - the most direct expression of "it works as a spec in Claude."
+Install it as a one-line Claude Code plugin, then run `/cv` (or say "build my AI engineer CV"):
+
+```
+/plugin marketplace add sebuzdugan/AIEngineerCV
+/plugin install aiengineercv@aiengineercv
+```
+
+The [`claude-skill/`](claude-skill) plugin bundles a `/cv` slash command and the **aiengineer-cv**
+skill, which runs the same flow as the CLI: ingest -> draft `Profile` -> ask only the gaps ->
+guardrail -> generate -> score -> write the CV to a file (and a print-ready `cv.html`; for PDF it
+shells out to the CLI in Claude Code, or print/web elsewhere).
+[`SKILL.md`](claude-skill/skills/aiengineer-cv/SKILL.md) points at the same six expertise assets that
+power every adapter - the most direct expression of "it works as a spec in Claude."
 
 ## Web app
 
@@ -64,10 +72,10 @@ PDF - all client-side. Bring your own key (optional) for the AI parse and rewrit
 deterministic CV need no key. It's a Vite + React static build deployed free to GitHub Pages with
 zero server cost.
 
-🚧 **Status:** all four adapters are built - core brain, CLI, Claude skill, and web app. See
+🚧 **Status:** all four adapters are built - core brain, CLI, Claude plugin, and web app. See
 [`docs/superpowers/specs`](docs/superpowers/specs) for the design, [`packages/core`](packages/core)
 for the assets that make the tool good, [`apps/cli`](apps/cli) for the CLI,
-[`claude-skill`](claude-skill) for the skill, and [`apps/web`](apps/web) for the web app.
+[`claude-skill`](claude-skill) for the Claude plugin, and [`apps/web`](apps/web) for the web app.
 
 ## Built by @sebuzdugan
 

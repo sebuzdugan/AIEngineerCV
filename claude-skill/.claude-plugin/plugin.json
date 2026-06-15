@@ -1,0 +1,13 @@
+{
+  "name": "aiengineercv",
+  "description": "Turn a pasted background, an attached CV, or a LinkedIn export into a polished, role-targeted AI-engineering CV. Applies baked-in hiring judgment, gives an AI Recruiter Score, and writes the CV to a file. AI/ML engineers only.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Sebastian Buzdugan",
+    "url": "https://x.com/sebuzdugan"
+  },
+  "homepage": "https://sebuzdugan.github.io/AIEngineerCV/",
+  "repository": "https://github.com/sebuzdugan/AIEngineerCV",
+  "license": "MIT",
+  "keywords": ["cv", "resume", "ai-engineer", "llm", "ats"]
+}

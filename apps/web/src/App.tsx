@@ -11,7 +11,7 @@ import { SocialIcons, SocialButtons } from './components/Socials.js';
 const DOORS = [
   { label: 'Web app', href: 'https://github.com/sebuzdugan/AIEngineerCV/tree/main/apps/web' },
   { label: 'CLI (aicv)', href: 'https://github.com/sebuzdugan/AIEngineerCV/tree/main/apps/cli' },
-  { label: 'Claude skill', href: 'https://github.com/sebuzdugan/AIEngineerCV/tree/main/claude-skill' },
+  { label: 'Claude plugin', href: 'https://github.com/sebuzdugan/AIEngineerCV/tree/main/claude-skill' },
 ];
 
 const KEY_STORAGE = 'aicv.key';
