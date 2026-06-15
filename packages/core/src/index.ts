@@ -35,3 +35,7 @@ export type { AliasHit } from './normalize.js';
 export { scoreProfile } from './score.js';
 export { classify, shouldProceed } from './guardrail.js';
 export { gaps, nextQuestion, triggers } from './gaps.js';
+
+// Deterministic CV rendering (no LLM)
+export { renderCv } from './render.js';
+export type { RenderOptions } from './render.js';

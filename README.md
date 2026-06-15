@@ -16,9 +16,32 @@ generic resume tips.
 **Bring your own key.** Calls go directly from your machine to your model provider. We never
 proxy, store, or see your key or your data. No backend, no database, no telemetry.
 
-🚧 **Status:** Phase 1 (the core "brain") is built. CLI, Claude skill, and web app are next.
-See [`docs/superpowers/specs`](docs/superpowers/specs) for the design and
-[`packages/core`](packages/core) for the assets that make the tool good.
+## CLI (`aicv`)
+
+The CLI wraps the shared brain end to end: ingest your materials, answer only the gap questions,
+generate, score, export.
+
+```bash
+# from a clone of this repo
+pnpm install && pnpm build
+
+export ANTHROPIC_API_KEY=sk-ant-...   # optional: enables the LLM parse + rewrite
+
+aicv init                 # interactive interview, writes profile.json
+aicv ingest my-cv.pdf     # parse a CV / LinkedIn export / notes into profile.json
+aicv generate             # build ./out/cv.md (LLM rewrite if a key is set, else deterministic)
+aicv score                # AI Recruiter Score + guardrail + top-3 fixes
+aicv export --md --html   # write ./out/cv.md and a print-ready ./out/cv.html (Print -> PDF)
+```
+
+Every LLM step is optional. With no key, `aicv` still scores you, renders a clean CV
+deterministically, and exports it - the score never needs a key. The guardrail (`aicv generate`)
+declines out-of-scope CVs unless you pass `--force`, and never bypasses silently.
+
+🚧 **Status:** Phase 1 (the core "brain") and Phase 2 (the CLI) are built. Claude skill and web
+app are next. See [`docs/superpowers/specs`](docs/superpowers/specs) for the design,
+[`packages/core`](packages/core) for the assets that make the tool good, and
+[`apps/cli`](apps/cli) for the CLI.
 
 Built by [@sebuzdugan](https://x.com/sebuzdugan). MIT licensed. PRs welcome - especially to the
 [taxonomy](packages/core/assets/taxonomy.yaml) and [rubric](packages/core/assets/rubric.yaml).
