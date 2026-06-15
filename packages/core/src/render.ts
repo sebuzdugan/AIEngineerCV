@@ -3,7 +3,7 @@
 // separate, optional enhancement; this renderer never invents content, it only lays out what the
 // Profile already contains.
 
-import { taxonomy } from './load.js';
+import { taxonomy } from './generated/assets.js';
 import type { Profile, Bullet, TaxonomyCategoryId } from './types.js';
 
 function categoryName(id: string): string {

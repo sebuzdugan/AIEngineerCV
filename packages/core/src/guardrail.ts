@@ -2,9 +2,24 @@
 // `reason` is always available, and callers can override (with the warning still shown) via the
 // Profile's screening.forced flag. Definitions and messages live in guardrail.md.
 
-import { guardrailMessage } from './load.js';
+import { guardrailDoc } from './generated/assets.js';
 import { distinctCategories } from './normalize.js';
 import type { Profile, GuardrailResult, GuardrailClass } from './types.js';
+
+/** Extract a named message block from guardrail.md (### <name> ... blockquote). */
+export function guardrailMessage(name: string): string {
+  const lines = guardrailDoc.split('\n');
+  const headerIdx = lines.findIndex((l) => l.trim().toLowerCase() === `### ${name}`);
+  if (headerIdx === -1) return '';
+  const collected: string[] = [];
+  for (let i = headerIdx + 1; i < lines.length; i++) {
+    const line = lines[i] ?? '';
+    if (line.startsWith('### ') || line.startsWith('## ')) break;
+    const m = line.match(/^>\s?(.*)$/);
+    if (m) collected.push(m[1] ?? '');
+  }
+  return collected.join(' ').replace(/\s+/g, ' ').trim();
+}
 
 // Title/role patterns that read as core AI/ML engineering.
 const AI_TITLE_RE =

@@ -1,7 +1,7 @@
 // Maps messy text onto the taxonomy. Shared by score.ts (vocabulary criterion) and
 // guardrail.ts (taxonomy density). Pure and deterministic.
 
-import { taxonomy } from './load.js';
+import { taxonomy } from './generated/assets.js';
 import type { Profile } from './types.js';
 
 export interface AliasHit {

@@ -1,7 +1,7 @@
 // Gap detection: given a Profile, return only the smart-questions whose trigger still fires,
 // in priority order. The golden rule of the interview: ask only what wasn't parsed.
 
-import { questionBank } from './load.js';
+import { questionBank } from './generated/assets.js';
 import type { Profile, Question } from './types.js';
 
 function getByPath(obj: unknown, path: string): unknown {

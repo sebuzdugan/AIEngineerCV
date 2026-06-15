@@ -21,7 +21,9 @@
     "build": "pnpm -r build",
     "test": "pnpm -r test",
     "typecheck": "pnpm -r typecheck",
-    "sync:skill": "node scripts/sync-skill-assets.mjs"
+    "gen:core": "node scripts/gen-core-assets.mjs",
+    "sync:skill": "node scripts/sync-skill-assets.mjs",
+    "sync:assets": "node scripts/gen-core-assets.mjs && node scripts/sync-skill-assets.mjs"
   },
   "devDependencies": {
     "typescript": "^5.5.4"

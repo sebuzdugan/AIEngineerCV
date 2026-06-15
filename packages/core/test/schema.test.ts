@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { validateProfile, parseProfile } from '../src/load.js';
+import { validateProfile, parseProfile } from '../src/validate.js';
 import { loadExample, exampleNames } from './fixtures.js';
 
 describe('profile schema', () => {

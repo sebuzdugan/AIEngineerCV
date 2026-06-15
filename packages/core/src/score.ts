@@ -1,7 +1,7 @@
 // Deterministic AI Recruiter Score. Reads rubric.yaml signals and scores a Profile 0-100 with
 // no LLM and no API key. Pure and reproducible: same Profile in -> same score out.
 
-import { rubric } from './load.js';
+import { rubric } from './generated/assets.js';
 import { distinctCategories } from './normalize.js';
 import type {
   Profile,

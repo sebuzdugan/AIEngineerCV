@@ -1,0 +1,53 @@
+@import 'tailwindcss';
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: #0a0c0d;
+  color: #e7e9ea;
+  font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.mono {
+  font-family: ui-monospace, 'SF Mono', 'JetBrains Mono', 'Fira Code', Menlo, monospace;
+}
+
+/* subtle grid texture for the hero */
+.grid-bg {
+  background-image:
+    linear-gradient(to right, #15191b 1px, transparent 1px),
+    linear-gradient(to bottom, #15191b 1px, transparent 1px);
+  background-size: 32px 32px;
+  -webkit-mask-image: radial-gradient(ellipse 80% 50% at 50% 0%, #000 50%, transparent 100%);
+  mask-image: radial-gradient(ellipse 80% 50% at 50% 0%, #000 50%, transparent 100%);
+}
+
+/* rendered CV markdown - dark ink on white paper */
+.cv { font-size: 0.92rem; line-height: 1.5; }
+.cv h1 { font-size: 1.55rem; font-weight: 700; margin: 0 0 2px; letter-spacing: -0.01em; color: #111; }
+.cv h2 { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.12em; color: #0a8050;
+         border-bottom: 1px solid #e4e4e4; padding-bottom: 4px; margin: 20px 0 9px; }
+.cv h3 { font-size: 0.95rem; font-weight: 600; margin: 12px 0 3px; color: #1a1a1a; }
+.cv p { margin: 3px 0; }
+.cv blockquote { margin: 7px 0 13px; padding-left: 11px; border-left: 2px solid #e0e0e0;
+                 color: #555; font-style: italic; }
+.cv ul { margin: 4px 0 10px; padding-left: 18px; }
+.cv li { margin: 3px 0; }
+.cv a { color: #111; border-bottom: 1px solid #d9d9d9; text-decoration: none; }
+.cv strong { font-weight: 600; color: #111; }
+
+@media print {
+  body * { visibility: hidden; }
+  #print-root, #print-root * { visibility: visible; }
+  #print-root { position: absolute; inset: 0; padding: 0; color: #111; background: #fff; }
+}

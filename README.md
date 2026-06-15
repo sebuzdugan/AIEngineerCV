@@ -4,6 +4,8 @@
 
 > An open-source CV builder for **AI engineers**. One brain, three doors.
 
+**[Try it in your browser](https://sebuzdugan.github.io/AIEngineerCV/)** - no signup, no upload.
+
 Turn your raw materials - an old CV, a LinkedIn export, a GitHub, or just free text - into a
 polished, role-targeted CV, by applying baked-in **AI-engineering hiring judgment** instead of
 generic resume tips.
@@ -46,10 +48,19 @@ draft `Profile` -> ask only the gaps -> guardrail -> generate -> score -> output
 [`SKILL.md`](claude-skill/SKILL.md) is the orchestration, pointed at the same six expertise assets
 that power every adapter - the most direct expression of "it works as a spec in Claude."
 
-🚧 **Status:** Phase 1 (core brain), Phase 2 (CLI), and Phase 3 (Claude skill) are built. The web
-app is next. See [`docs/superpowers/specs`](docs/superpowers/specs) for the design,
-[`packages/core`](packages/core) for the assets that make the tool good,
-[`apps/cli`](apps/cli) for the CLI, and [`claude-skill`](claude-skill) for the skill.
+## Web app
+
+The [live drag-and-drop app](https://sebuzdugan.github.io/AIEngineerCV/) ([`apps/web`](apps/web))
+runs the same brain in your browser: drop a CV or paste your background, see the live editable CV
+preview and a screenshot-worthy AI Recruiter Score, copy the share-card, and export to Markdown or
+PDF - all client-side. Bring your own key (optional) for the AI parse and rewrite; the score and the
+deterministic CV need no key. It's a Vite + React static build deployed free to GitHub Pages with
+zero server cost.
+
+🚧 **Status:** all four adapters are built - core brain, CLI, Claude skill, and web app. See
+[`docs/superpowers/specs`](docs/superpowers/specs) for the design, [`packages/core`](packages/core)
+for the assets that make the tool good, [`apps/cli`](apps/cli) for the CLI,
+[`claude-skill`](claude-skill) for the skill, and [`apps/web`](apps/web) for the web app.
 
 Built by [@sebuzdugan](https://x.com/sebuzdugan). MIT licensed. PRs welcome - especially to the
 [taxonomy](packages/core/assets/taxonomy.yaml) and [rubric](packages/core/assets/rubric.yaml).
