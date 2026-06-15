@@ -34,7 +34,9 @@ export function IngestZone({ apiKey, model, onProfile, onError }: Props): JSX.El
     const partial = heuristicExtract(raw);
     onProfile(
       { schemaVersion: '1.0', identity: { name: '', source: 'asked', confidence: 1 }, target: { role: 'other' }, ...partial } as Profile,
-      apiKey ? '' : 'Captured contact + links. Add a key for a full parse, or fill the form below.',
+      apiKey
+        ? 'AI parse did not complete - captured contact + links heuristically. Fill the form to add the rest.'
+        : 'Captured contact + links. Add a key for a full parse, or fill the form below.',
     );
   }
 

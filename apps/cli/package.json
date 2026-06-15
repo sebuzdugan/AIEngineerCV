@@ -13,6 +13,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
     "dev": "node --import tsx src/index.ts"
   },
   "dependencies": {
@@ -28,7 +29,8 @@
     "@types/node": "^20.14.0",
     "@types/pdf-parse": "^1.1.4",
     "@types/prompts": "^2.4.9",
-    "tsx": "^4.19.0"
+    "tsx": "^4.19.0",
+    "vitest": "^2.0.5"
   },
   "keywords": ["cv", "resume", "ai-engineer", "cli"]
 }
