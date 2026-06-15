@@ -6,6 +6,13 @@ import { IngestZone } from './components/IngestZone.js';
 import { TargetForm } from './components/TargetForm.js';
 import { generateCv, DEFAULT_MODEL } from './lib/llm.js';
 import { sampleProfile, emptyProfile } from './lib/sample.js';
+import { SocialIcons, SocialButtons } from './components/Socials.js';
+
+const DOORS = [
+  { label: 'Web app', href: 'https://github.com/sebuzdugan/AIEngineerCV/tree/main/apps/web' },
+  { label: 'CLI (aicv)', href: 'https://github.com/sebuzdugan/AIEngineerCV/tree/main/apps/cli' },
+  { label: 'Claude skill', href: 'https://github.com/sebuzdugan/AIEngineerCV/tree/main/claude-skill' },
+];
 
 const KEY_STORAGE = 'aicv.key';
 
@@ -69,19 +76,53 @@ export function App(): JSX.Element {
 
   return (
     <div className="min-h-full">
+      {/* Top nav */}
+      <nav className="sticky top-0 z-20 border-b border-[#15191b] bg-[#0a0c0d]/80 backdrop-blur">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3">
+          <div className="mono flex items-center gap-2 text-[13px] font-bold tracking-[0.12em] text-[#e7e9ea]">
+            <span className="grid h-6 w-6 place-items-center rounded-md bg-[#10220f] text-[#9fe870]">{'>'}</span>
+            AIENGINEERCV
+          </div>
+          <div className="flex items-center gap-1">
+            <SocialIcons className="hidden sm:flex" />
+            <a
+              href="https://github.com/sebuzdugan/AIEngineerCV"
+              target="_blank"
+              rel="noreferrer"
+              className="mono ml-1 rounded-lg border border-[#2f5a32] bg-[#10220f] px-3 py-1.5 text-[12px] text-[#bfe8c2] transition hover:bg-[#163217]"
+            >
+              ★ Star on GitHub
+            </a>
+          </div>
+        </div>
+      </nav>
+
       {/* Hero */}
-      <header className="grid-bg border-b border-[#15191b]">
-        <div className="mx-auto max-w-6xl px-5 pb-10 pt-12">
-          <div className="mono text-[12px] tracking-[0.2em] text-[#9fe870]">AIENGINEERCV</div>
-          <h1 className="mt-3 max-w-2xl text-4xl font-bold leading-tight tracking-tight text-[#f2f4f5] sm:text-5xl">
-            A CV builder for AI engineers.
+      <header className="grid-bg glow relative overflow-hidden border-b border-[#15191b]">
+        <div className="mx-auto max-w-6xl px-5 pb-11 pt-14">
+          <div className="mono text-[12px] tracking-[0.2em] text-[#9fe870]">ONE BRAIN / THREE DOORS</div>
+          <h1 className="fadeup mt-3 max-w-2xl text-4xl font-bold leading-[1.05] tracking-tight text-[#f2f4f5] sm:text-6xl">
+            A CV builder for <span className="text-[#9fe870]">AI engineers</span>.
           </h1>
-          <p className="mt-3 max-w-xl text-[15px] text-[#aeb4b8]">
+          <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-[#aeb4b8]">
             Drop your old CV, a LinkedIn export, or just paste your background. Get a sharp,
             role-targeted CV and your <span className="text-[#9fe870]">AI Recruiter Score</span> -
             scored by baked-in hiring judgment, not generic resume tips.
           </p>
-          <p className="mono mt-4 text-[12px] text-[#6f767c]">
+          <div className="mt-5 flex flex-wrap items-center gap-2">
+            {DOORS.map((d) => (
+              <a
+                key={d.label}
+                href={d.href}
+                target="_blank"
+                rel="noreferrer"
+                className="mono rounded-full border border-[#23282b] bg-[#0e1113] px-3 py-1 text-[11px] text-[#aeb4b8] transition hover:border-[#39424a] hover:text-[#e7e9ea]"
+              >
+                {d.label}
+              </a>
+            ))}
+          </div>
+          <p className="mono mt-5 text-[12px] text-[#6f767c]">
             bring your own key / runs in your browser / nothing proxied, stored, or uploaded
           </p>
         </div>
@@ -145,18 +186,26 @@ export function App(): JSX.Element {
         </div>
       </main>
 
-      <footer className="border-t border-[#15191b] py-8">
-        <div className="mx-auto flex max-w-6xl flex-col items-center gap-2 px-5 text-center text-[12px] text-[#6f767c]">
-          <div>
+      <footer className="border-t border-[#15191b] py-10">
+        <div className="mx-auto flex max-w-6xl flex-col items-center gap-4 px-5 text-center">
+          <div className="text-[13px] text-[#aeb4b8]">
             Built by{' '}
-            <a className="text-[#9fe870]" href="https://x.com/sebuzdugan" target="_blank" rel="noreferrer">
+            <a className="font-medium text-[#9fe870]" href="https://x.com/sebuzdugan" target="_blank" rel="noreferrer">
               @sebuzdugan
-            </a>{' '} / open source / {' '}
-            <a className="text-[#aeb4b8] underline" href="https://github.com/sebuzdugan/AIEngineerCV" target="_blank" rel="noreferrer">
-              GitHub
+            </a>{' '}
+            - an AI engineer, for AI engineers. Say hi:
+          </div>
+          <SocialButtons />
+          <div className="mono text-[11px] text-[#565c61]">
+            open source / MIT licensed / PRs welcome to the{' '}
+            <a className="underline hover:text-[#9fe870]" href="https://github.com/sebuzdugan/AIEngineerCV/blob/main/packages/core/assets/taxonomy.yaml" target="_blank" rel="noreferrer">
+              taxonomy
+            </a>{' '}
+            &amp;{' '}
+            <a className="underline hover:text-[#9fe870]" href="https://github.com/sebuzdugan/AIEngineerCV/blob/main/packages/core/assets/rubric.yaml" target="_blank" rel="noreferrer">
+              rubric
             </a>
           </div>
-          <div className="mono text-[11px] text-[#565c61]">AI/ML engineers only / MIT licensed / PRs welcome to the taxonomy &amp; rubric</div>
         </div>
       </footer>
     </div>

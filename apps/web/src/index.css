@@ -24,13 +24,37 @@ body {
 
 /* subtle grid texture for the hero */
 .grid-bg {
+  position: relative;
   background-image:
     linear-gradient(to right, #15191b 1px, transparent 1px),
     linear-gradient(to bottom, #15191b 1px, transparent 1px);
   background-size: 32px 32px;
-  -webkit-mask-image: radial-gradient(ellipse 80% 50% at 50% 0%, #000 50%, transparent 100%);
-  mask-image: radial-gradient(ellipse 80% 50% at 50% 0%, #000 50%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 30% 0%, #000 40%, transparent 100%);
+  mask-image: radial-gradient(ellipse 80% 60% at 30% 0%, #000 40%, transparent 100%);
 }
+
+/* soft green glow accent */
+.glow::before {
+  content: '';
+  position: absolute;
+  top: -120px;
+  left: -80px;
+  width: 520px;
+  height: 360px;
+  background: radial-gradient(circle, rgba(159, 232, 112, 0.12), transparent 70%);
+  pointer-events: none;
+  filter: blur(8px);
+}
+
+.score-glow {
+  text-shadow: 0 0 28px rgba(159, 232, 112, 0.35);
+}
+
+@keyframes fadeup {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fadeup { animation: fadeup 0.4s ease both; }
 
 /* rendered CV markdown - dark ink on white paper */
 .cv { font-size: 0.92rem; line-height: 1.5; }

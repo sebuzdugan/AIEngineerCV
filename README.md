@@ -4,6 +4,11 @@
 
 > An open-source CV builder for **AI engineers**. One brain, three doors.
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-9fe870.svg)](LICENSE)
+[![Stars](https://img.shields.io/github/stars/sebuzdugan/AIEngineerCV?style=social)](https://github.com/sebuzdugan/AIEngineerCV/stargazers)
+[![PRs welcome](https://img.shields.io/badge/PRs-welcome-9fe870.svg)](https://github.com/sebuzdugan/AIEngineerCV/pulls)
+[![Live](https://img.shields.io/badge/demo-live-9fe870)](https://sebuzdugan.github.io/AIEngineerCV/)
+
 **[Try it in your browser](https://sebuzdugan.github.io/AIEngineerCV/)** - no signup, no upload.
 
 Turn your raw materials - an old CV, a LinkedIn export, a GitHub, or just free text - into a
@@ -64,5 +69,15 @@ zero server cost.
 for the assets that make the tool good, [`apps/cli`](apps/cli) for the CLI,
 [`claude-skill`](claude-skill) for the skill, and [`apps/web`](apps/web) for the web app.
 
-Built by [@sebuzdugan](https://x.com/sebuzdugan). MIT licensed. PRs welcome - especially to the
-[taxonomy](packages/core/assets/taxonomy.yaml) and [rubric](packages/core/assets/rubric.yaml).
+## Built by @sebuzdugan
+
+An AI engineer, for AI engineers. Say hi or follow along:
+
+[![X](https://img.shields.io/badge/X-@sebuzdugan-0a0c0d?logo=x&logoColor=white)](https://x.com/sebuzdugan)
+[![YouTube](https://img.shields.io/badge/YouTube-@sebuzdugan-0a0c0d?logo=youtube&logoColor=ff0000)](https://youtube.com/@sebuzdugan)
+[![Medium](https://img.shields.io/badge/Medium-@sebuzdugan-0a0c0d?logo=medium&logoColor=white)](https://medium.com/@sebuzdugan)
+[![GitHub](https://img.shields.io/badge/GitHub-sebuzdugan-0a0c0d?logo=github&logoColor=white)](https://github.com/sebuzdugan)
+
+MIT licensed. PRs welcome - especially to the
+[taxonomy](packages/core/assets/taxonomy.yaml) and [rubric](packages/core/assets/rubric.yaml);
+every contribution to the AI-engineering vocabulary makes the tool sharper.

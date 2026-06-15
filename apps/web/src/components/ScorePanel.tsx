@@ -41,7 +41,7 @@ export function ScorePanel({ profile }: { profile: Profile }): JSX.Element {
       </div>
 
       <div className="mt-2 flex items-end gap-3">
-        <div className="mono text-6xl font-bold leading-none" style={{ color: barColor(score.score / 100) }}>
+        <div className="mono score-glow text-6xl font-bold leading-none" style={{ color: barColor(score.score / 100) }}>
           {score.score}
         </div>
         <div className="pb-1 text-sm text-[#aeb4b8]">/ 100</div>
