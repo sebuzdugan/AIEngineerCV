@@ -1,0 +1,166 @@
+# AIEngineerCV - smart-question bank (the persona interview)
+#
+# Prioritized, branching. The golden rule: ASK ONLY WHAT WASN'T PARSED.
+# gaps.ts evaluates each question's `trigger` against the current Profile and returns only the
+# questions that still need answering, in `priority` order (lower = asked first).
+#
+# Each question declares:
+#   id        - stable identifier
+#   priority  - sort order (1 = highest)
+#   trigger   - when to ask (evaluated by gaps.ts):
+#                 {type: missing,    path}      -> ask if scalar path is empty/null
+#                 {type: emptyArray, path}      -> ask if array path is empty/absent
+#                 {type: noBulletMetric}        -> ask if NO experience bullet has a metric
+#                 {type: always}                -> always ask unless its maps_to is already set
+#   why       - why it matters (shown to the user, and explains the value)
+#   maps_to   - dot-path in the Profile where the answer lands
+#   kind      - single-select | multi-select | text | number | boolean
+#   options   - for select kinds
+#
+# Highest-value questions are the metric probes - they move the score the most.
+
+version: "1.0"
+
+questions:
+  - id: screening
+    priority: 1
+    trigger: { type: always }
+    why: "Confirms the tool is a fit (AI engineers only) and feeds the guardrail."
+    maps_to: screening.buildsAiSystems
+    kind: boolean
+    prompt: "Do you build or ship systems that use ML/LLMs?"
+
+  - id: target-role
+    priority: 2
+    trigger: { type: missing, path: target.role }
+    why: "Targets the whole CV. An MLOps CV and a research-engineer CV emphasize different things."
+    maps_to: target.role
+    kind: single-select
+    prompt: "What role are you targeting?"
+    options:
+      - { value: llm-ai-engineer, label: "LLM / AI engineer" }
+      - { value: applied-ml-engineer, label: "Applied ML engineer" }
+      - { value: research-engineer, label: "Research engineer" }
+      - { value: mlops-engineer, label: "MLOps engineer" }
+      - { value: ai-full-stack, label: "AI full-stack engineer" }
+      - { value: founding-engineer, label: "Founding engineer (AI product)" }
+      - { value: data-scientist, label: "Data scientist (ships models)" }
+      - { value: other, label: "Other" }
+
+  - id: seniority
+    priority: 3
+    trigger: { type: missing, path: target.seniority }
+    why: "Junior CVs emphasize shipped projects and velocity; senior+ emphasize ownership and scale."
+    maps_to: target.seniority
+    kind: single-select
+    prompt: "What seniority are you targeting?"
+    options:
+      - { value: junior, label: "Junior" }
+      - { value: mid, label: "Mid" }
+      - { value: senior, label: "Senior" }
+      - { value: staff, label: "Staff" }
+      - { value: principal, label: "Principal" }
+      - { value: lead, label: "Lead / Manager-IC" }
+
+  - id: years-in-ai
+    priority: 4
+    trigger: { type: missing, path: target.yearsInAiMl }
+    why: "Years in AI/ML specifically (not total career) calibrates seniority and page length."
+    maps_to: target.yearsInAiMl
+    kind: number
+    prompt: "How many years have you worked in AI/ML specifically?"
+
+  - id: company-type
+    priority: 5
+    trigger: { type: missing, path: target.companyType }
+    why: "Tailors tone and emphasis. A frontier lab and an early startup want different signals."
+    maps_to: target.companyType
+    kind: single-select
+    prompt: "What kind of company are you targeting?"
+    options:
+      - { value: frontier-lab, label: "Frontier lab" }
+      - { value: ai-startup, label: "AI startup" }
+      - { value: big-tech, label: "Big tech" }
+      - { value: enterprise, label: "Enterprise" }
+      - { value: agency, label: "Agency / consultancy" }
+
+  - id: flagship-project
+    priority: 6
+    trigger: { type: emptyArray, path: experience }
+    why: "Your most impressive shipped AI system anchors the whole CV."
+    maps_to: experience
+    kind: text
+    prompt: "What's the most impressive AI system you've shipped to production? Name it, your role, the hard problem, and the stack."
+
+  - id: flagship-scale
+    priority: 7
+    trigger: { type: noBulletMetric }
+    why: "Scale numbers (requests, docs, users) are the single highest-value addition to a bullet."
+    maps_to: experience[].bullets[].metric
+    kind: text
+    prompt: "For your flagship system - what scale did it handle? (requests/sec, docs indexed, users served, tokens/day...)"
+
+  - id: metric-latency-cost
+    priority: 8
+    trigger: { type: noBulletMetric }
+    why: "Latency and cost wins are concrete, credible, and rare on most CVs - they stand out."
+    maps_to: experience[].bullets[].metric
+    kind: text
+    prompt: "Did you improve latency or cost on any system? By how much? (e.g. p95 240ms -> 90ms, cost -60%)"
+
+  - id: metric-accuracy
+    priority: 9
+    trigger: { type: noBulletMetric }
+    why: "Eval/accuracy gains prove you measure your systems, not just build them."
+    maps_to: experience[].bullets[].metric
+    kind: text
+    prompt: "Any accuracy or eval gains you can quantify? (e.g. retrieval recall +18pts, eval pass-rate 72% -> 91%)"
+
+  - id: stack-confirm
+    priority: 10
+    trigger: { type: emptyArray, path: skills }
+    why: "Confirms your stack against the taxonomy so skills are grouped and named correctly."
+    maps_to: skills
+    kind: multi-select
+    prompt: "Confirm your core stack - we'll map it onto the AI-engineering taxonomy and group it."
+
+  - id: evidence-links
+    priority: 11
+    trigger: { type: emptyArray, path: links }
+    why: "Repos, papers, demos, and talks are credibility markers that lift the score."
+    maps_to: links
+    kind: text
+    prompt: "Any GitHub repos, papers, demos, or talks to link?"
+
+  - id: contact
+    priority: 12
+    trigger: { type: missing, path: identity.email }
+    why: "ATS systems route on contactable details; a CV without contact info is a dead end."
+    maps_to: identity.email
+    kind: text
+    prompt: "What email should go on the CV?"
+
+  - id: constraints
+    priority: 13
+    trigger: { type: missing, path: target.locationPreference }
+    why: "Remote/relocation and target geographies shape what roles this CV should chase."
+    maps_to: target.locationPreference
+    kind: single-select
+    prompt: "What are your location constraints?"
+    options:
+      - { value: remote, label: "Remote only" }
+      - { value: hybrid, label: "Hybrid" }
+      - { value: onsite, label: "On-site" }
+      - { value: relocation-ok, label: "Open to relocation" }
+
+  - id: page-length
+    priority: 14
+    trigger: { type: missing, path: target.pageLength }
+    why: "One page for < 8 years unless justified; you decide the default."
+    maps_to: target.pageLength
+    kind: single-select
+    prompt: "One page or two?"
+    options:
+      - { value: one-page, label: "One page" }
+      - { value: two-page, label: "Two pages" }
+      - { value: auto, label: "Let the tool decide" }

@@ -1,0 +1,113 @@
+# AIEngineerCV - scoring rubric (the AI Recruiter Score)
+#
+# The internal definition of "good." Produces a 0-100 score plus the top-3 fixes.
+# Weights sum to 100. Each criterion declares:
+#   - how it scores high / low (for humans and for the generation spec)
+#   - a concrete fix template (shown to the user when the criterion is weak)
+#   - `signals`: machine-readable parameters the deterministic scorer (score.ts) consumes,
+#     so scoring stays reproducible and needs no API key.
+#
+# Community PRs to tune weights/signals are welcome. Keep `id`s stable; score.ts maps to them.
+
+version: "1.0"
+
+# A short, paraphrased "what good looks like" digest distilled from strong AI-engineering CVs.
+# This is guidance, NOT a template to copy. It deliberately sets the bar ABOVE typical reference
+# CVs on one axis in particular: hard quantified metrics.
+goldStandard:
+  - A clear role headline (e.g. "AI/ML Engineer") and dense, category-grouped skills.
+  - >-
+    Bullets with real technical depth and NAMED techniques. Not "built a RAG system" but:
+    OCR -> intelligent chunking -> embedding generation -> vector indexing -> hybrid retrieval
+    -> metadata filtering -> query rewriting -> contextual prompt assembly.
+  - Named real systems and platforms, not vague capabilities.
+  - Credibility markers - publications, certifications, talks, PhD-level research.
+  - >-
+    THE GAP TO EXPLOIT - most strong CVs are still light on hard quantified metrics
+    (latency, scale, cost, accuracy, adoption). Push every user PAST the reference here.
+
+criteria:
+  - id: specificity
+    name: Specificity
+    weight: 20
+    scoresHigh: Names real systems, products, and concrete techniques. The reader can picture what was built.
+    scoresLow: Vague claims ("worked on AI features", "built ML models") with no named system or technique.
+    fixTemplate: "Name the actual system in '{bullet}'. What was it called, and which 2-3 concrete techniques did it use?"
+    signals:
+      # fraction of bullets that name a system AND >=1 tech term
+      bulletsWithSystemAndTechTarget: 0.7
+      vaguePhrases: ["worked on", "helped with", "involved in", "responsible for", "various", "some", "stuff", "things", "ai features", "ml models"]
+
+  - id: quantified-impact
+    name: Quantified impact
+    weight: 20
+    scoresHigh: Bullets carry hard numbers - latency, scale (req/docs/users), cost, accuracy/eval gains, adoption.
+    scoresLow: No numbers anywhere; impact is asserted, not measured.
+    fixTemplate: "Add a number to '{bullet}'. Do you have a latency, scale, cost, accuracy, or adoption figure for it?"
+    signals:
+      # fraction of bullets containing a metric; this is the axis we push hardest
+      bulletsWithMetricTarget: 0.5
+      metricPattern: "\\b\\d[\\d,.]*\\s*(%|x|ms|s|k|m|b|gb|tb|qps|rps|req|requests|users|docs|tokens|hours|days|×|\\$)"
+
+  - id: ai-vocabulary
+    name: Correct AI vocabulary
+    weight: 15
+    scoresHigh: Uses current taxonomy terms correctly and precisely; no buzzword salad.
+    scoresLow: Generic terms ("AI", "ML", "GenAI") or misused jargon; titles masquerading as skills.
+    fixTemplate: "Replace generic terms like '{term}' with the specific taxonomy skill you actually used."
+    signals:
+      distinctCategoriesTarget: 4   # touch >=4 of the 7 taxonomy categories
+      bannedAsPrimary: ["ai", "ml", "genai", "llms", "artificial intelligence"]
+
+  - id: shipped-to-prod
+    name: Shipped-to-prod evidence
+    weight: 15
+    scoresHigh: Production systems with real users/traffic, not just experiments or notebooks.
+    scoresLow: Only prototypes, courses, or "explored/researched" with nothing shipped.
+    fixTemplate: "Did '{bullet}' reach production? Add the signal - users served, traffic handled, or 'deployed to prod'."
+    signals:
+      prodTerms: ["production", "prod", "deployed", "shipped", "live", "users", "traffic", "serving", "in production", "rolled out"]
+      experimentTerms: ["explored", "researched", "prototype", "poc", "proof of concept", "experimented", "coursework", "tutorial"]
+      bulletsWithProdSignalTarget: 0.4
+
+  - id: credibility-markers
+    name: Credibility markers
+    weight: 10
+    scoresHigh: Open-source with stars/usage, papers, talks, certifications, advanced degrees.
+    scoresLow: No external evidence of credibility.
+    fixTemplate: "Add a credibility marker - link a repo, paper, talk, or certification you have."
+    signals:
+      anyOf: ["projects", "publications", "certifications", "githubLink"]
+
+  - id: ats-friendliness
+    name: ATS-friendliness
+    weight: 10
+    scoresHigh: Parseable structure; clear sections; role-relevant keywords present; contactable.
+    scoresLow: Missing contact info, no target role keywords, or unstructured.
+    fixTemplate: "Add {missing} so applicant tracking systems can parse and route your CV."
+    signals:
+      requiresContact: ["email"]
+      requiresTargetRole: true
+      minSkills: 6
+
+  - id: signal-to-noise
+    name: Signal-to-noise
+    weight: 10
+    scoresHigh: Scannable, no filler; every line earns its place; fits the target page length.
+    scoresLow: Padding, soft-skill clichés, walls of text, or far too many bullets.
+    fixTemplate: "Trim filler from '{bullet}'. Cut soft-skill clichés and merge overlapping bullets."
+    signals:
+      fillerPhrases: ["team player", "hard worker", "detail-oriented", "go-getter", "results-driven", "passionate about", "self-starter", "fast learner"]
+      maxBulletsPerRole: 6
+      maxBulletWords: 32
+
+# How the 0-100 number maps to a human verdict (used for the share card).
+bands:
+  - min: 85
+    label: "Strong - recruiter-ready"
+  - min: 70
+    label: "Solid - a few high-value fixes away"
+  - min: 50
+    label: "Promising - needs sharper specifics and numbers"
+  - min: 0
+    label: "Early - let's add named systems and metrics"

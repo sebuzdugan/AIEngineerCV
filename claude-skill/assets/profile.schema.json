@@ -1,0 +1,316 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aiengineercv.dev/schema/profile.schema.json",
+  "title": "AIEngineerCV Profile",
+  "description": "The single canonical source of truth for a candidate. Every adapter (web, CLI, Claude skill) does exactly one job: populate a valid Profile. Every content record carries provenance (source + confidence) so the tool can honor the anti-hallucination rules: never present an inferred value as fact, and never invent metrics.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "identity", "target"],
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "const": "1.0",
+      "description": "Schema version this Profile conforms to."
+    },
+    "identity": { "$ref": "#/$defs/identity" },
+    "target": { "$ref": "#/$defs/target" },
+    "headline": {
+      "$ref": "#/$defs/sourcedText",
+      "description": "Short role headline, e.g. 'AI/ML Engineer'. Tool-generated unless user-supplied."
+    },
+    "summary": {
+      "$ref": "#/$defs/sourcedText",
+      "description": "2-3 line professional summary. Tool-generated unless user-supplied."
+    },
+    "skills": {
+      "type": "array",
+      "description": "Skills normalized onto the taxonomy. Group in the rendered CV by category.",
+      "items": { "$ref": "#/$defs/skill" }
+    },
+    "experience": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/experienceItem" }
+    },
+    "projects": {
+      "type": "array",
+      "description": "Projects / open-source work.",
+      "items": { "$ref": "#/$defs/projectItem" }
+    },
+    "publications": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/publication" }
+    },
+    "education": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/education" }
+    },
+    "certifications": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/certification" }
+    },
+    "links": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/link" }
+    },
+    "screening": {
+      "$ref": "#/$defs/screening",
+      "description": "Answers to the one-question scope screen + self-declared focus, used by the guardrail classifier."
+    }
+  },
+  "$defs": {
+    "source": {
+      "type": "string",
+      "enum": ["parsed", "asked", "inferred"],
+      "description": "How this record entered the Profile. 'parsed' = extracted from a provided source; 'asked' = user answered a question; 'inferred' = tool-deduced and MUST be confirmed before it lands in the CV."
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "0-1 confidence in this record. Inferred records below the confirmation threshold should be surfaced as 'inferred - confirm?'."
+    },
+    "provenance": {
+      "type": "object",
+      "description": "Mixed into records to record where the data came from.",
+      "required": ["source", "confidence"],
+      "properties": {
+        "source": { "$ref": "#/$defs/source" },
+        "confidence": { "$ref": "#/$defs/confidence" }
+      }
+    },
+    "sourcedText": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["text", "source", "confidence"],
+      "properties": {
+        "text": { "type": "string", "minLength": 1 },
+        "source": { "$ref": "#/$defs/source" },
+        "confidence": { "$ref": "#/$defs/confidence" }
+      }
+    },
+    "identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "email": { "type": "string", "format": "email" },
+        "phone": { "type": "string" },
+        "location": { "type": "string", "description": "City, Country." },
+        "source": { "$ref": "#/$defs/source" },
+        "confidence": { "$ref": "#/$defs/confidence" }
+      }
+    },
+    "target": {
+      "type": "object",
+      "description": "Who this CV is aimed at. Drives tone, emphasis, and targeting in the generation spec.",
+      "additionalProperties": false,
+      "required": ["role"],
+      "properties": {
+        "role": {
+          "type": "string",
+          "description": "Target role family.",
+          "enum": [
+            "llm-ai-engineer",
+            "applied-ml-engineer",
+            "research-engineer",
+            "mlops-engineer",
+            "ai-full-stack",
+            "founding-engineer",
+            "data-scientist",
+            "other"
+          ]
+        },
+        "roleLabel": {
+          "type": "string",
+          "description": "Free-text label when role is 'other', or a more specific title."
+        },
+        "seniority": {
+          "type": "string",
+          "enum": ["junior", "mid", "senior", "staff", "principal", "lead", "unspecified"]
+        },
+        "yearsInAiMl": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Years of experience in AI/ML specifically (not total career)."
+        },
+        "companyType": {
+          "type": "string",
+          "enum": ["frontier-lab", "ai-startup", "big-tech", "enterprise", "agency", "unspecified"]
+        },
+        "locationPreference": {
+          "type": "string",
+          "enum": ["remote", "hybrid", "onsite", "relocation-ok", "unspecified"]
+        },
+        "geographies": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Target geographies, e.g. ['EU', 'US-remote']."
+        },
+        "pageLength": {
+          "type": "string",
+          "enum": ["one-page", "two-page", "auto"],
+          "default": "auto"
+        }
+      }
+    },
+    "skill": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "category", "source", "confidence"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1, "description": "Canonical skill name from the taxonomy." },
+        "raw": { "type": "string", "description": "Original surface form before normalization, if different." },
+        "category": {
+          "type": "string",
+          "description": "Taxonomy category id.",
+          "enum": [
+            "llm-generative",
+            "retrieval-knowledge",
+            "agents-orchestration",
+            "evaluation-reliability",
+            "context-engineering",
+            "serving-mlops",
+            "foundations"
+          ]
+        },
+        "level": {
+          "type": "string",
+          "enum": ["familiar", "proficient", "expert"]
+        },
+        "source": { "$ref": "#/$defs/source" },
+        "confidence": { "$ref": "#/$defs/confidence" }
+      }
+    },
+    "bullet": {
+      "type": "object",
+      "description": "An impact-framed bullet, decomposed so the generator can enforce: <strong action verb> + <specific system> + <named tech> + <quantified outcome>. 'metric' is encouraged but optional - never fabricate one.",
+      "additionalProperties": false,
+      "required": ["action", "source", "confidence"],
+      "properties": {
+        "action": { "type": "string", "minLength": 1, "description": "What was done, ideally led by a strong verb." },
+        "system": { "type": "string", "description": "The specific named system or product worked on." },
+        "tech": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Named technologies/techniques used."
+        },
+        "metric": {
+          "type": "string",
+          "description": "Quantified outcome (latency, scale, cost, accuracy, adoption). Encouraged but optional. MUST come from the user - never invented."
+        },
+        "rendered": {
+          "type": "string",
+          "description": "Optional fully-rendered bullet string. When present, 'source' tells whether the phrasing is user-stated or tool-suggested."
+        },
+        "source": { "$ref": "#/$defs/source" },
+        "confidence": { "$ref": "#/$defs/confidence" }
+      }
+    },
+    "experienceItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["org", "title", "startDate", "source", "confidence"],
+      "properties": {
+        "org": { "type": "string", "minLength": 1 },
+        "title": { "type": "string", "minLength": 1 },
+        "location": { "type": "string" },
+        "startDate": { "type": "string", "description": "ISO 'YYYY' or 'YYYY-MM'." },
+        "endDate": { "type": "string", "description": "ISO 'YYYY' or 'YYYY-MM', or 'present'." },
+        "bullets": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/bullet" }
+        },
+        "source": { "$ref": "#/$defs/source" },
+        "confidence": { "$ref": "#/$defs/confidence" }
+      }
+    },
+    "projectItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "source", "confidence"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "repo": { "type": "string", "description": "Repository or demo URL." },
+        "role": { "type": "string", "description": "Your specific role/contribution." },
+        "stars": { "type": "integer", "minimum": 0, "description": "GitHub stars, if open source." },
+        "usage": { "type": "string", "description": "Adoption signal, e.g. 'used by 3 teams', 'X downloads/mo'." },
+        "shipped": { "type": "string", "description": "What concretely shipped." },
+        "tech": { "type": "array", "items": { "type": "string" } },
+        "source": { "$ref": "#/$defs/source" },
+        "confidence": { "$ref": "#/$defs/confidence" }
+      }
+    },
+    "publication": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["title", "source", "confidence"],
+      "properties": {
+        "title": { "type": "string", "minLength": 1 },
+        "venue": { "type": "string", "description": "Conference / journal / blog." },
+        "year": { "type": "integer" },
+        "url": { "type": "string" },
+        "source": { "$ref": "#/$defs/source" },
+        "confidence": { "$ref": "#/$defs/confidence" }
+      }
+    },
+    "education": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["institution", "source", "confidence"],
+      "properties": {
+        "institution": { "type": "string", "minLength": 1 },
+        "degree": { "type": "string" },
+        "field": { "type": "string" },
+        "year": { "type": "integer" },
+        "note": { "type": "string", "description": "e.g. 'PhD-level research in NLP'." },
+        "source": { "$ref": "#/$defs/source" },
+        "confidence": { "$ref": "#/$defs/confidence" }
+      }
+    },
+    "certification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "source", "confidence"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "issuer": { "type": "string" },
+        "year": { "type": "integer" },
+        "source": { "$ref": "#/$defs/source" },
+        "confidence": { "$ref": "#/$defs/confidence" }
+      }
+    },
+    "link": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "url"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["github", "linkedin", "website", "twitter", "scholar", "demo", "other"]
+        },
+        "url": { "type": "string" },
+        "label": { "type": "string" }
+      }
+    },
+    "screening": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "buildsAiSystems": {
+          "type": "boolean",
+          "description": "Answer to the one screening question: 'Do you build/ship systems that use ML/LLMs?'"
+        },
+        "selfDescribedFocus": {
+          "type": "string",
+          "description": "Free-text: what the candidate says they do."
+        },
+        "forced": {
+          "type": "boolean",
+          "default": false,
+          "description": "Set when the user used --force to bypass an out-of-scope classification. The warning is still shown; the bypass is never silent."
+        }
+      }
+    }
+  }
+}

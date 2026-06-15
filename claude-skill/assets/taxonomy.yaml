@@ -1,0 +1,163 @@
+# AIEngineerCV - AI-engineering taxonomy
+#
+# The canonical vocabulary the tool maps messy input onto. Two parts:
+#   1. `categories` - the 7 skill groups, each with canonical skills + aliases.
+#   2. `synonyms`   - a global normalization map: messy surface form -> canonical skill.
+#
+# This file is deliberately easy to extend. Community PRs that add skills, aliases, or fix a
+# normalization are welcome - they double as engagement. Rules for contributors:
+#   - Keep `id`s stable and kebab-case; they are referenced by profile.schema.json and rubric.yaml.
+#   - Add aliases lowercase; matching is case-insensitive.
+#   - Prefer current, precise terms. Flag titles-masquerading-as-skills in `synonyms[].note`.
+
+version: "1.0"
+
+categories:
+  - id: llm-generative
+    name: LLM & Generative
+    blurb: Adapting and compressing foundation models.
+    skills:
+      - canonical: LLM/SLM fine-tuning
+        aliases: [fine-tuning, finetuning, fine tuning, sft, supervised fine-tuning, instruction tuning, peft, lora, qlora]
+      - canonical: RLHF / preference optimization
+        aliases: [rlhf, dpo, ppo, orpo, preference tuning, reward modeling, alignment tuning]
+      - canonical: Distillation
+        aliases: [knowledge distillation, model distillation, teacher-student]
+      - canonical: Quantization
+        aliases: [quantisation, gptq, awq, bitsandbytes, int8, int4, gguf]
+      - canonical: Prompt/diffusion image generation
+        aliases: [stable diffusion, diffusion models, text-to-image, image generation]
+
+  - id: retrieval-knowledge
+    name: Retrieval & Knowledge
+    blurb: Grounding models in external knowledge.
+    skills:
+      - canonical: RAG
+        aliases: [retrieval augmented generation, retrieval-augmented generation, rag pipeline, rag system]
+      - canonical: Hybrid search
+        aliases: [hybrid retrieval, bm25 + dense, sparse-dense, lexical + semantic]
+      - canonical: Re-ranking
+        aliases: [reranking, reranker, cross-encoder, cohere rerank]
+      - canonical: Chunking
+        aliases: [text chunking, intelligent chunking, semantic chunking, recursive chunking]
+      - canonical: Embeddings
+        aliases: [embedding generation, sentence embeddings, text embeddings, vector embeddings]
+      - canonical: Vector databases
+        aliases: [vector db, vector store, pinecone, weaviate, qdrant, milvus, pgvector, faiss, chroma]
+      - canonical: Knowledge graphs / Graph-RAG
+        aliases: [knowledge graph, graph rag, graphrag, kg, entity graph]
+      - canonical: Query rewriting
+        aliases: [query expansion, query reformulation, hyde, multi-query]
+
+  - id: agents-orchestration
+    name: Agents & Orchestration
+    blurb: Multi-step, tool-using systems.
+    skills:
+      - canonical: Tool use / function calling
+        aliases: [function calling, tool calling, tool use, structured outputs, json mode]
+      - canonical: Multi-agent systems
+        aliases: [multi agent, multiagent, agent swarm, crew, agent orchestration]
+      - canonical: MCP (Model Context Protocol)
+        aliases: [model context protocol, mcp server, mcp client]
+      - canonical: Planning & reasoning
+        aliases: [react, react agent, planning, chain-of-thought, cot, tree of thoughts]
+      - canonical: Agent frameworks
+        aliases: [langchain, langgraph, llamaindex, autogen, crewai, semantic kernel, pydantic ai]
+
+  - id: evaluation-reliability
+    name: Evaluation & Reliability
+    blurb: Knowing - and keeping - the system good.
+    skills:
+      - canonical: Evals
+        aliases: [evaluation, eval harness, offline evals, online evals, benchmarking]
+      - canonical: LLM-as-judge
+        aliases: [llm as judge, model graded eval, ai grader]
+      - canonical: Guardrails
+        aliases: [guardrail, content moderation, output validation, safety filters, input validation]
+      - canonical: Observability
+        aliases: [tracing, llm observability, langfuse, langsmith, phoenix, arize, helicone]
+      - canonical: Regression testing
+        aliases: [regression tests, golden datasets, snapshot testing for llms]
+      - canonical: Hallucination detection
+        aliases: [groundedness, faithfulness, factuality checks]
+
+  - id: context-engineering
+    name: Context Engineering
+    blurb: The discipline that replaced "prompt engineering" - designing what the model sees.
+    skills:
+      - canonical: Context engineering
+        aliases: [prompt engineering, prompting, prompt design, context design]
+      - canonical: Prompt templating & assembly
+        aliases: [prompt templates, contextual prompt assembly, prompt composition]
+      - canonical: Context window management
+        aliases: [context management, context compression, context packing, long context]
+      - canonical: Few-shot / in-context learning
+        aliases: [few shot, in-context learning, icl, example selection]
+      - canonical: Structured prompting
+        aliases: [xml prompting, system prompts, role prompting]
+
+  - id: serving-mlops
+    name: Serving & MLOps
+    blurb: Getting models to production and keeping them cheap and fast.
+    skills:
+      - canonical: Model deployment
+        aliases: [deployment, model serving, inference serving, vllm, tgi, triton, sagemaker endpoints]
+      - canonical: Latency & cost optimization
+        aliases: [latency optimization, cost optimization, inference optimization, caching, batching, kv cache]
+      - canonical: Monitoring
+        aliases: [model monitoring, drift detection, production monitoring]
+      - canonical: CI/CD for models
+        aliases: [ci/cd, mlops pipelines, model registry, continuous training, ci cd]
+      - canonical: Infrastructure
+        aliases: [kubernetes, docker, terraform, gpu infrastructure, ray, modal, runpod]
+      - canonical: Streaming & APIs
+        aliases: [server-sent events, sse, websockets, streaming responses, fastapi, api design]
+
+  - id: foundations
+    name: Foundations
+    blurb: The classical groundwork under the modern stack.
+    skills:
+      - canonical: NLP
+        aliases: [natural language processing, text classification, ner, tokenization, spacy, nltk]
+      - canonical: Computer vision
+        aliases: [cv, image classification, object detection, ocr, segmentation, opencv]
+      - canonical: Classical ML
+        aliases: [machine learning, scikit-learn, sklearn, xgboost, random forest, regression, clustering]
+      - canonical: Deep learning frameworks
+        aliases: [pytorch, tensorflow, jax, keras, huggingface, transformers]
+      - canonical: Data engineering
+        aliases: [data pipelines, etl, spark, airflow, dbt, feature engineering]
+
+# Global normalization map. Keys are lowercase surface forms users actually type.
+# Each maps to a canonical skill, its category, and an optional note the tool can surface.
+synonyms:
+  "prompt engineering":
+    canonical: Context engineering
+    category: context-engineering
+    note: "Treated as a skill under Context Engineering - not a job title. If used as a title, the rubric flags it."
+  "prompt engineer":
+    canonical: Context engineering
+    category: context-engineering
+    note: "This is a title using a skill's name. Reframe the title; keep the skill."
+  "genai":
+    canonical: LLM/SLM fine-tuning
+    category: llm-generative
+    note: "Vague umbrella term. Replace with the specific generative skill actually used."
+  "ai":
+    canonical: ""
+    category: foundations
+    note: "Too generic to score. Map to the specific technique."
+  "llms":
+    canonical: ""
+    category: llm-generative
+    note: "Generic. Map to the specific LLM skill (fine-tuning, serving, context engineering...)."
+  "vector search":
+    canonical: Vector databases
+    category: retrieval-knowledge
+  "semantic search":
+    canonical: Embeddings
+    category: retrieval-knowledge
+  "openai api":
+    canonical: Tool use / function calling
+    category: agents-orchestration
+    note: "Using an API is table stakes; surface the actual capability built with it."

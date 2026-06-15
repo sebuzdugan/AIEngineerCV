@@ -20,7 +20,8 @@
   "scripts": {
     "build": "pnpm -r build",
     "test": "pnpm -r test",
-    "typecheck": "pnpm -r typecheck"
+    "typecheck": "pnpm -r typecheck",
+    "sync:skill": "node scripts/sync-skill-assets.mjs"
   },
   "devDependencies": {
     "typescript": "^5.5.4"
