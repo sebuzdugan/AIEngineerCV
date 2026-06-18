@@ -12,6 +12,8 @@ export interface Env {
   INITIAL_FREE_TRIES?: string;
   FOLLOW_BONUS?: string;
   MAX_TRIES_CAP?: string;
+  IP_DAILY_CAP?: string;
+  GLOBAL_DAILY_CAP?: string;
 }
 
 const PLATFORMS = ['x', 'youtube', 'medium'] as const;
@@ -112,6 +114,28 @@ async function rateLimited(env: Env, bucket: string, ip: string, perMin: number)
   return n > perMin;
 }
 
+// ---- daily caps (abuse + cost protection) ----
+function dayKey(): string {
+  return new Date().toISOString().slice(0, 10); // UTC YYYY-MM-DD
+}
+async function readDaily(env: Env, key: string): Promise<number> {
+  return num((await env.FREE.get(key)) ?? undefined, 0);
+}
+async function bumpDaily(env: Env, key: string): Promise<void> {
+  await env.FREE.put(key, String((await readDaily(env, key)) + 1), { expirationTtl: 172800 }); // ~2 days
+}
+
+// Common throwaway/disposable email domains (small, high-signal list).
+const DISPOSABLE = new Set([
+  'mailinator.com', 'tempmail.com', 'temp-mail.org', '10minutemail.com', 'guerrillamail.com',
+  'sharklasers.com', 'yopmail.com', 'trashmail.com', 'getnada.com', 'dispostable.com',
+  'maildrop.cc', 'throwawaymail.com', 'fakeinbox.com', 'mintemail.com', 'mailnesia.com',
+  'tempr.email', 'moakt.com', 'emailondeck.com', 'spam4.me', 'mohmal.com',
+]);
+function isDisposable(email: string): boolean {
+  return DISPOSABLE.has((email.split('@')[1] ?? '').toLowerCase());
+}
+
 // ---- scope guard (light; full guardrail runs in the browser) ----
 interface Profile {
   identity?: { name?: string };
@@ -167,6 +191,7 @@ async function generateCv(env: Env, profile: Profile): Promise<string> {
 async function unlock(req: Request, env: Env): Promise<Response> {
   const { email } = await readBody<{ email?: string }>(req);
   if (!isEmail(email)) return json(req, env, { error: 'invalid_email' }, 400);
+  if (isDisposable(email)) return json(req, env, { error: 'disposable_email', message: 'Please use a permanent email address.' }, 400);
   if (await rateLimited(env, 'unlock', clientIp(req), 4)) return json(req, env, { error: 'rate_limited' }, 429);
   const tries = await ensureInit(env, email);
   const follows = (await Promise.all(PLATFORMS.map((p) => env.FREE.get(`follow:${emailKey(email)}:${p}`)))).map(
@@ -181,9 +206,22 @@ async function generate(req: Request, env: Env): Promise<Response> {
   if (!auth) return json(req, env, { error: 'unauthorized', message: 'Unlock with your email first.' }, 401);
   if (await rateLimited(env, 'gen', clientIp(req), 6)) return json(req, env, { error: 'rate_limited', message: 'Slow down a moment.' }, 429);
   if (!looksInScope(profile)) return json(req, env, { error: 'out_of_scope', message: 'Add some AI/ML skills or experience first.' }, 422);
+
+  // Daily caps: protect your credits + blunt fake-email farming from a single network.
+  const day = dayKey();
+  const globalKey = `global:${day}`;
+  const ipKey = `ipday:${clientIp(req)}:${day}`;
+  if ((await readDaily(env, globalKey)) >= num(env.GLOBAL_DAILY_CAP, 500))
+    return json(req, env, { error: 'daily_capacity', message: 'The free demo hit its daily limit. Add your own key, or try again tomorrow.' }, 503);
+  if ((await readDaily(env, ipKey)) >= num(env.IP_DAILY_CAP, 3))
+    return json(req, env, { error: 'ip_daily_cap', message: 'Daily free limit reached for your network. Add your own key, or come back tomorrow.' }, 429);
+
   if ((await getTries(env, auth.email)) <= 0)
     return json(req, env, { error: 'no_tries', tries: 0, message: 'No free tries left. Follow for more, or add your own key.' }, 402);
 
+  // Count this attempt against the daily caps, then spend the per-email try.
+  await bumpDaily(env, globalKey);
+  await bumpDaily(env, ipKey);
   await setTries(env, auth.email, (await getTries(env, auth.email)) - 1); // spend first
   const remaining = await getTries(env, auth.email);
   try {

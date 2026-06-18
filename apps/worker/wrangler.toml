@@ -10,6 +10,9 @@ ALLOWED_ORIGINS = "https://sebuzdugan.github.io,http://localhost:5173,http://loc
 INITIAL_FREE_TRIES = "1"
 FOLLOW_BONUS = "2"
 MAX_TRIES_CAP = "12"
+# Abuse + cost protection: max free generations per IP per day, and across everyone per day.
+IP_DAILY_CAP = "3"
+GLOBAL_DAILY_CAP = "500"
 
 # Create a KV namespace once, then paste its id here:
 #   npx wrangler kv namespace create FREE
