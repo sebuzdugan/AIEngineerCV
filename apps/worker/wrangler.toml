@@ -1,0 +1,19 @@
+name = "aiengineercv-free"
+main = "src/index.ts"
+compatibility_date = "2024-11-01"
+
+# Non-secret config (edit freely). Secrets (OPENROUTER_API_KEY, TOKEN_SECRET) are NOT here -
+# they are set via the GitHub Action's `secrets` input or `wrangler secret put`.
+[vars]
+OPENROUTER_MODEL = "deepseek/deepseek-chat-v3-0324"
+ALLOWED_ORIGINS = "https://sebuzdugan.github.io,http://localhost:5173,http://localhost:4174"
+INITIAL_FREE_TRIES = "1"
+FOLLOW_BONUS = "2"
+MAX_TRIES_CAP = "12"
+
+# Create a KV namespace once, then paste its id here:
+#   npx wrangler kv namespace create FREE
+# (or create it in the Cloudflare dashboard: Storage & Databases > KV)
+[[kv_namespaces]]
+binding = "FREE"
+id = "REPLACE_WITH_KV_NAMESPACE_ID"

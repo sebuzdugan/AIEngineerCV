@@ -30,9 +30,8 @@ async function post(path: string, payload: unknown): Promise<Record<string, unkn
 
 export function TryFree({ profile, onCv }: { profile: Profile; onCv: (md: string) => void }): JSX.Element | null {
   const [open, setOpen] = useState(false);
-  const [step, setStep] = useState<'email' | 'code' | 'ready'>('email');
+  const [step, setStep] = useState<'email' | 'ready'>('email');
   const [email, setEmail] = useState('');
-  const [code, setCode] = useState('');
   const [saved, setSaved] = useState<Saved | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -42,8 +41,7 @@ export function TryFree({ profile, onCv }: { profile: Profile; onCv: (md: string
     const s = localStorage.getItem(STORE);
     if (s) {
       try {
-        const parsed = JSON.parse(s) as Saved;
-        setSaved(parsed);
+        setSaved(JSON.parse(s) as Saved);
         setStep('ready');
       } catch {
         /* ignore */
@@ -59,25 +57,11 @@ export function TryFree({ profile, onCv }: { profile: Profile; onCv: (md: string
     localStorage.setItem(STORE, JSON.stringify(s));
   };
 
-  async function sendCode(): Promise<void> {
+  async function unlock(): Promise<void> {
     setError(null);
     setBusy(true);
     try {
-      await post('/api/request-code', { email });
-      setStep('code');
-      setNote(`Code sent to ${email}. Check your inbox.`);
-    } catch (e) {
-      setError((e as Error).message);
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  async function verify(): Promise<void> {
-    setError(null);
-    setBusy(true);
-    try {
-      const d = await post('/api/verify', { email, code });
+      const d = await post('/api/unlock', { email });
       persist({ token: d.token as string, email, tries: Number(d.tries), follows: (d.follows as string[]) ?? [] });
       setStep('ready');
       setNote(null);
@@ -102,9 +86,7 @@ export function TryFree({ profile, onCv }: { profile: Profile; onCv: (md: string
       persist({ ...saved, tries: Number(d.tries) });
       setNote('Generated on the house. Edit your profile and generate again if you have tries left.');
     } catch (e) {
-      const msg = (e as Error).message;
-      setError(msg);
-      // sync the tries count if the server reported it
+      setError((e as Error).message);
     } finally {
       setBusy(false);
     }
@@ -145,7 +127,7 @@ export function TryFree({ profile, onCv }: { profile: Profile; onCv: (md: string
 
       {step === 'email' && (
         <div className="mt-3 space-y-2">
-          <p className="text-[12px] text-[#9aa1a6]">Enter your email to get one free generation on our key. We send a 6-digit code.</p>
+          <p className="text-[12px] text-[#9aa1a6]">Drop your email to unlock one free generation on our key. No code, no spam.</p>
           <input
             type="email"
             value={email}
@@ -153,29 +135,9 @@ export function TryFree({ profile, onCv }: { profile: Profile; onCv: (md: string
             placeholder="you@example.com"
             className="mono w-full rounded-lg border border-[#23282b] bg-[#0a0c0d] px-3 py-2 text-[13px] text-[#dfe3e5] outline-none focus:border-[#39424a]"
           />
-          <button onClick={() => void sendCode()} disabled={busy || !email} className="mono rounded-lg border border-[#2f5a32] bg-[#10220f] px-3 py-1.5 text-[12px] text-[#bfe8c2] disabled:opacity-40">
-            {busy ? 'sending…' : 'send code'}
+          <button onClick={() => void unlock()} disabled={busy || !email} className="mono rounded-lg border border-[#2f5a32] bg-[#10220f] px-3 py-1.5 text-[12px] text-[#bfe8c2] disabled:opacity-40">
+            {busy ? 'unlocking…' : 'unlock free try'}
           </button>
-        </div>
-      )}
-
-      {step === 'code' && (
-        <div className="mt-3 space-y-2">
-          <input
-            inputMode="numeric"
-            value={code}
-            onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
-            placeholder="6-digit code"
-            className="mono w-full rounded-lg border border-[#23282b] bg-[#0a0c0d] px-3 py-2 text-[13px] tracking-[0.3em] text-[#dfe3e5] outline-none focus:border-[#39424a]"
-          />
-          <div className="flex gap-2">
-            <button onClick={() => void verify()} disabled={busy || code.length !== 6} className="mono rounded-lg border border-[#2f5a32] bg-[#10220f] px-3 py-1.5 text-[12px] text-[#bfe8c2] disabled:opacity-40">
-              {busy ? 'verifying…' : 'verify'}
-            </button>
-            <button onClick={() => void sendCode()} disabled={busy} className="mono text-[12px] text-[#7d858b] hover:text-[#aeb4b8]">
-              resend
-            </button>
-          </div>
         </div>
       )}
 

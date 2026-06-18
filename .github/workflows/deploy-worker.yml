@@ -1,0 +1,39 @@
+name: Deploy free-try Worker
+
+# Deploys the Cloudflare Worker (apps/worker) from GitHub on every push that touches it.
+# Required repo secrets (Settings > Secrets and variables > Actions):
+#   CLOUDFLARE_API_TOKEN   - a Cloudflare API token with "Edit Workers" permission
+#   CLOUDFLARE_ACCOUNT_ID  - your Cloudflare account id
+#   OPENROUTER_API_KEY     - a FRESH OpenRouter key (uploaded as a Worker secret, never in code)
+#   TOKEN_SECRET           - any long random string (signs the email-verified token)
+# One-time: create the KV namespace and paste its id into apps/worker/wrangler.toml:
+#   npx wrangler kv namespace create FREE
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/worker/**'
+      - '.github/workflows/deploy-worker.yml'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Deploy Worker
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: apps/worker
+          secrets: |
+            OPENROUTER_API_KEY
+            TOKEN_SECRET
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          TOKEN_SECRET: ${{ secrets.TOKEN_SECRET }}
