@@ -20,12 +20,20 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    # Skip cleanly (green) until Cloudflare is configured, so pushes don't show a red failure.
+    env:
+      CONFIGURED: ${{ secrets.CLOUDFLARE_API_TOKEN != '' && 'yes' || '' }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - if: env.CONFIGURED != 'yes'
+        run: echo "Cloudflare not configured yet (no CLOUDFLARE_API_TOKEN secret). Skipping deploy. See apps/worker/README.md."
+      - if: env.CONFIGURED == 'yes'
+        uses: actions/checkout@v4
+      - if: env.CONFIGURED == 'yes'
+        uses: actions/setup-node@v4
         with:
           node-version: 20
       - name: Deploy Worker
+        if: env.CONFIGURED == 'yes'
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
