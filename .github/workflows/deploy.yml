@@ -31,6 +31,10 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - name: Build core then web
+        env:
+          # Set repo variable VITE_API_BASE (Settings > Secrets and variables > Actions > Variables)
+          # to your deployed Vercel API URL to light up the "Try it free" button. Unset = button hidden.
+          VITE_API_BASE: ${{ vars.VITE_API_BASE }}
         run: |
           pnpm --filter @aiengineercv/core build
           pnpm --filter @aiengineercv/web build

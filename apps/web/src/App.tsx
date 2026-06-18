@@ -4,6 +4,7 @@ import { ScorePanel } from './components/ScorePanel.js';
 import { Preview } from './components/Preview.js';
 import { IngestZone } from './components/IngestZone.js';
 import { TargetForm } from './components/TargetForm.js';
+import { TryFree } from './components/TryFree.js';
 import { generateCv, DEFAULT_MODEL } from './lib/llm.js';
 import { sampleProfile, emptyProfile } from './lib/sample.js';
 import { SocialIcons, SocialButtons } from './components/Socials.js';
@@ -152,6 +153,7 @@ export function App(): JSX.Element {
         <div className="grid gap-6 lg:grid-cols-2">
           {/* Left: input */}
           <div className="space-y-5">
+            <TryFree profile={profile} onCv={(md) => { setAiCv(md); setError(null); setNote('Generated free on our key. Edit and regenerate if you have tries left.'); }} />
             <IngestZone apiKey={apiKey} model={model} onProfile={(p, n) => { setProfile(p); setNote(n || null); setError(null); }} onError={setError} />
             <TargetForm profile={profile} onChange={setProfile} />
 
