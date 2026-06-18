@@ -16,4 +16,4 @@ MAX_TRIES_CAP = "12"
 # (or create it in the Cloudflare dashboard: Storage & Databases > KV)
 [[kv_namespaces]]
 binding = "FREE"
-id = "REPLACE_WITH_KV_NAMESPACE_ID"
+id = "697630bf7cb34c08ac3a77c070552b92"
