@@ -84,7 +84,11 @@ export function TryFree({ profile, onCv }: { profile: Profile; onCv: (md: string
       const d = await post('/api/generate', { token: saved.token, profile });
       onCv(d.cv as string);
       persist({ ...saved, tries: Number(d.tries) });
-      setNote('Generated on the house. Edit your profile and generate again if you have tries left.');
+      setNote(
+        d.emailed
+          ? `Your full CV is below — we also emailed a copy to ${saved.email}. Edit and generate again if you have tries left.`
+          : 'Your full CV is below. Edit your profile and generate again if you have tries left.',
+      );
     } catch (e) {
       setError((e as Error).message);
     } finally {
@@ -127,7 +131,7 @@ export function TryFree({ profile, onCv }: { profile: Profile; onCv: (md: string
 
       {step === 'email' && (
         <div className="mt-3 space-y-2">
-          <p className="text-[12px] text-[#9aa1a6]">Drop your email to unlock one free generation on our key. No code, no spam.</p>
+          <p className="text-[12px] text-[#9aa1a6]">Drop your email to unlock one free generation on our key. You'll see the full CV here and get a copy in your inbox. No spam.</p>
           <input
             type="email"
             value={email}

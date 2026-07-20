@@ -13,6 +13,17 @@ MAX_TRIES_CAP = "12"
 # Abuse + cost protection: max free generations per IP per day, and across everyone per day.
 IP_DAILY_CAP = "3"
 GLOBAL_DAILY_CAP = "500"
+# Email delivery (Resend). From must be a Resend-verified domain to reach arbitrary inboxes;
+# the default onboarding sender only delivers to your own Resend account address.
+RESEND_FROM = "AIEngineerCV <onboarding@resend.dev>"
+EMAIL_REPLY_TO = "sebastian.buzdugan03@gmail.com"
+
+# SECRETS (do NOT put here - set via the GitHub Action or `wrangler secret put`):
+#   OPENROUTER_API_KEY  - server-side model key (already configured)
+#   TOKEN_SECRET        - signs the email token (already configured)
+#   ADMIN_KEY           - unlocks the leads dashboard at /api/leads?key=... (required to view leads)
+#   RESEND_API_KEY      - enables emailing the CV to the person (leave unset to skip email)
+#   LEAD_WEBHOOK_URL    - POSTs each new lead to your Google Sheet Apps Script (leave unset to skip)
 
 # Create a KV namespace once, then paste its id here:
 #   npx wrangler kv namespace create FREE

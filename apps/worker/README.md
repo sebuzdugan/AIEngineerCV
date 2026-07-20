@@ -13,9 +13,10 @@ we don't send a code). The key lives only in a Worker secret - it never reaches 
 
 | Route | Body | Does |
 | --- | --- | --- |
-| `POST /api/unlock` | `{email}` | Stores the email (your lead list), grants the first free try once, returns an HMAC `token`. |
-| `POST /api/generate` | `{token, profile}` | Verifies token + a remaining try, generates the CV via OpenRouter (DeepSeek), decrements. Refunds on failure. |
+| `POST /api/unlock` | `{email}` | Stores the email (your lead list), grants the first free try once, returns an HMAC `token`. Forwards new leads to your sheet webhook. |
+| `POST /api/generate` | `{token, profile}` | Verifies token + a remaining try, generates the CV via OpenRouter (DeepSeek), decrements. **Emails a copy to the person** (if Resend is configured). Refunds on failure. |
 | `POST /api/grant-follow` | `{token, platform}` | Honor-system: `+FOLLOW_BONUS` tries once per platform (`x`/`youtube`/`medium`). |
+| `GET /api/leads?key=…` | – | **Your lead dashboard.** Password-gated (`ADMIN_KEY`). Opens as an HTML table in the browser; add `&format=csv` to download, `&format=json` for the API. |
 
 Tries live in KV (source of truth), so the token can't be forged to mint tries. IP rate limits + a
 hard cap (`MAX_TRIES_CAP`) protect your credits.
@@ -30,18 +31,54 @@ hard cap (`MAX_TRIES_CAP`) protect your credits.
    Note your **Account ID** (Workers dashboard sidebar).
 4. **GitHub repo secrets** (Settings > Secrets and variables > Actions): `CLOUDFLARE_API_TOKEN`,
    `CLOUDFLARE_ACCOUNT_ID`, `OPENROUTER_API_KEY` (the fresh one), `TOKEN_SECRET` (any long random string).
+   Optional, to light up the new features: `ADMIN_KEY` (leads dashboard password), `RESEND_API_KEY`
+   (email the CV), `LEAD_WEBHOOK_URL` (mirror leads to a sheet). Unset = that feature stays off.
 5. **Push** (or run the "Deploy free-try Worker" Action). It deploys and uploads the secrets. You get
    a URL like `https://aiengineercv-free.<your-subdomain>.workers.dev`.
 6. **Wire the frontend**: set repo **variable** `VITE_API_BASE` to that Worker URL. Next Pages deploy
    lights up the "Try it free" button.
 
-## Your lead list
+## Your lead list (the easy way)
 
-Collected emails are stored as KV keys `lead:<email>`. Export them:
+Set a repo secret `ADMIN_KEY` (any password) and open, in your browser:
 
-```bash
-npx wrangler kv key list --binding FREE | grep '"name": "lead:'
 ```
+https://aiengineercv-free.<your-subdomain>.workers.dev/api/leads?key=YOUR_ADMIN_KEY
+```
+
+You get a live table of every email, when they first showed up, how many CVs they
+generated, and their remaining tries. Add `&format=csv` to download the list, or
+`&format=json` to script against it. Without `ADMIN_KEY` set, the page stays closed (401).
+
+### Optional: mirror leads into a Google Sheet (live)
+
+1. Make a Google Sheet. **Extensions → Apps Script**, paste:
+
+   ```js
+   function doPost(e) {
+     const d = JSON.parse(e.postData.contents);
+     SpreadsheetApp.getActiveSpreadsheet().getSheets()[0]
+       .appendRow([d.at, d.email, d.source]);
+     return ContentService.createTextOutput('ok');
+   }
+   ```
+2. **Deploy → New deployment → Web app**, "Execute as: me", "Who has access: Anyone".
+   Copy the `/exec` URL.
+3. Set it as the repo secret `LEAD_WEBHOOK_URL`. Every new email now appends a row.
+
+### Optional: email each person their CV
+
+The generator can email the finished CV to whoever requested it (great incentive to give a
+real address — fakes never receive it).
+
+1. Create a free [Resend](https://resend.com) account, add an API key.
+2. **To reach arbitrary inboxes you must verify a domain in Resend** and set the repo var
+   `RESEND_FROM` to a sender on it (e.g. `AIEngineerCV <cv@yourdomain.com>`). Without a verified
+   domain, Resend only delivers to your own account address.
+3. Set the repo secret `RESEND_API_KEY`. That's it — `/api/generate` now returns `emailed: true`
+   and the person gets a copy. Leave it unset to skip email entirely (the CV still shows on screen).
+
+The old manual export still works too: `npx wrangler kv key list --binding FREE | grep '"name": "lead:'`.
 
 ## Local dev
 

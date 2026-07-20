@@ -6,6 +6,10 @@ name: Deploy free-try Worker
 #   CLOUDFLARE_ACCOUNT_ID  - your Cloudflare account id
 #   OPENROUTER_API_KEY     - a FRESH OpenRouter key (uploaded as a Worker secret, never in code)
 #   TOKEN_SECRET           - any long random string (signs the email-verified token)
+# Optional repo secrets (features stay off until you set them):
+#   ADMIN_KEY              - password for the leads dashboard at /api/leads?key=...
+#   RESEND_API_KEY         - Resend key so the CV is emailed to the person
+#   LEAD_WEBHOOK_URL       - Google Sheet Apps Script URL to forward each new lead to
 # One-time: create the KV namespace and paste its id into apps/worker/wrangler.toml:
 #   npx wrangler kv namespace create FREE
 
@@ -42,6 +46,12 @@ jobs:
           secrets: |
             OPENROUTER_API_KEY
             TOKEN_SECRET
+            ADMIN_KEY
+            RESEND_API_KEY
+            LEAD_WEBHOOK_URL
         env:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           TOKEN_SECRET: ${{ secrets.TOKEN_SECRET }}
+          ADMIN_KEY: ${{ secrets.ADMIN_KEY }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          LEAD_WEBHOOK_URL: ${{ secrets.LEAD_WEBHOOK_URL }}
